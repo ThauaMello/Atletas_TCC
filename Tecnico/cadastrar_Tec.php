@@ -8,7 +8,7 @@ $tipo = $_GET['tipo'];
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cadastro de <?php echo ucfirst($tipo); ?> </title>
-        <link rel="stylesheet" href="/TCC/estilo/estilo.css">
+        <link rel="stylesheet" href="../estilo/estilo.css">
     </head>
 
     <body>

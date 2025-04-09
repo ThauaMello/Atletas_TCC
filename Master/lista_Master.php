@@ -29,7 +29,7 @@
 
             <?php
 
-            include 'db_connect.php'; //arquivo de conecção
+            include __DIR__ . '/../db_connect.php';
 
             // buscando a tabela propria
             if (isset($_GET['tipo'])) {
