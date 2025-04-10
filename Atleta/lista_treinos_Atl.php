@@ -1,114 +1,77 @@
 <?php
 session_start();
-$id_atleta = $_SESSION['id_atleta']; // tenho q arrumar esta com erro 
-
-include __DIR__ . '/../db_connect.php';
-
-// Carregar modalidades
-$modalidades = [];
-$modal_query = "SELECT DISTINCT modalidade FROM treinos WHERE id_atleta = $id_atleta";
-$modal_result = $conn->query($modal_query);
-while ($row = $modal_result->fetch_assoc()) {
-    $modalidades[] = $row['modalidade'];
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
+    header("Location: ../login.php");
+    exit();
 }
 
-// Filtrando a modalidade
-$filtro = isset($_GET['modalidade']) ? $_GET['modalidade'] : '';
-$sql = "SELECT * FROM treinos WHERE id_atleta = $id_atleta";
-if ($filtro) {
-    $sql .= " AND modalidade = '" . $conn->real_escape_string($filtro) . "'";
-}
-$sql .= " ORDER BY data DESC";
-$result = $conn->query($sql);
+include_once("../conexao.php");
+$id_atleta = $_SESSION['id'];
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Histórico de Treinos</title>
-  <link rel="stylesheet" href="../estilo/estilo.css">
-  <script>
-    function toggleInfo(button) {
-      const info = button.closest('.record').querySelector('.record-info');
-      if (info.style.display === 'none') {
-        info.style.display = 'block';
-        button.textContent = '▲';
-      } else {
-        info.style.display = 'none';
-        button.textContent = '▼';
-      }
-    }
-
-    function abrirAvaliacao(idTreino) {
-      const modal = document.getElementById('modalAvaliacao');
-      document.getElementById('id_treino_input').value = idTreino;
-      modal.style.display = 'block';
-    }
-
-    function fecharAvaliacao() {
-      document.getElementById('modalAvaliacao').style.display = 'none';
-    }
-  </script>
-    
+    <meta charset="UTF-8">
+    <title>Meus Treinos</title>
+    <link rel="stylesheet" href="../estilo/estilo.css">
+    <script>
+        function toggleInfo(button) {
+            const recordInfo = button.closest('.record').querySelector('.record-info');
+            recordInfo.style.display = recordInfo.style.display === 'none' ? 'block' : 'none';
+            button.textContent = button.textContent === '▼' ? '▲' : '▼';
+        }
+    </script>
 </head>
 <body>
 
 <?php include 'menu_Atl.php'; ?>
 
 <div class="main-container">
-  <h2 class="form-title">Histórico de Treinos</h2>
+    <h2 class="form-title">Meus Treinos por Dia da Semana</h2>
 
-  <form method="GET" style="margin-bottom: 20px;">
-    <label>Filtrar por Modalidade:</label>
-    <select name="modalidade" onchange="this.form.submit()">
-      <option value="">Todas</option>
-      <?php
-        foreach ($modalidades as $mod) {
-            $selected = ($mod == $filtro) ? 'selected' : '';
-            echo "<option value='$mod' $selected>$mod</option>";
-        }
-      ?>
-    </select>
-  </form>
+    <?php
+    // Buscar treinos do atleta com dia_semana
+    $sql = "SELECT t.* FROM treinos t
+            JOIN treino_atletas ta ON t.id_treino = ta.id_treino
+            WHERE ta.id_atleta = ?
+            ORDER BY FIELD(t.dia_semana, 'Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'), t.data_treino DESC";
 
-  <?php
-    if ($result->num_rows > 0) {
-      while($row = $result->fetch_assoc()) {
-        echo "<div class='record'>";
-        echo "<button class='toggle-info' onclick='toggleInfo(this)'>▼</button>";
-        echo "<div class='record-name'>Treino em " . date('d/m/Y', strtotime($row["data"])) . "</div>";
-        echo "<div class='record-info'>";
-        echo "<p><strong>Descrição:</strong> " . $row["descricao"] . "</p>";
-        echo "<p><strong>Modalidade:</strong> " . $row["modalidade"] . "</p>";
-        echo "<p><strong>Marca/Tempo:</strong> " . $row["marca"] . "</p>";
-        echo "<p><strong>Observações:</strong> " . $row["observacoes"] . "</p>";
-        echo "<button onclick='abrirAvaliacao(" . $row["id"] . ")'>Avaliar</button>";
-        echo "</div>";
-        echo "</div>";
-      }
-    } else {
-      echo "<p>Nenhum treino encontrado.</p>";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id_atleta);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $treinos_por_dia = [];
+
+    while ($treino = $result->fetch_assoc()) {
+        $dia = $treino['dia_semana'] ?? 'Sem Dia Definido';
+        $treinos_por_dia[$dia][] = $treino;
     }
-    $conn->close();
-  ?>
-</div>
 
-<!-- Modal para avaliação -->
-<div id="modalAvaliacao" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="fecharAvaliacao()">X</span>
-    <h3>Avaliação do Treino</h3>
-    <form method="POST" action="salvar_avaliacao.php">
-      <input type="hidden" name="id_treino" id="id_treino_input">
-      <label for="cansaco">Cansaço (1 a 5):</label>
-      <input type="number" name="cansaco" min="1" max="5" required><br>
-      <label for="dificuldades">Dificuldades:</label>
-      <textarea name="dificuldades"></textarea><br>
-      <label><input type="checkbox" name="melhor_marca"> Melhor Marca Pessoal</label><br>
-      <button type="submit">Enviar</button>
-    </form>
-  </div>
+    if (empty($treinos_por_dia)) {
+        echo "<p>Nenhum treino atribuído até o momento.</p>";
+    } else {
+        foreach ($treinos_por_dia as $dia_semana => $treinos) {
+            echo "<h3 style='color:#0077ff; margin-top:20px;'>📅 $dia_semana</h3>";
+
+            foreach ($treinos as $row) {
+                echo "<div class='record'>";
+                echo "<button class='toggle-info' onclick='toggleInfo(this)'>▼</button>";
+                echo "<div class='record-name'>" . htmlspecialchars($row["tipo_treino"]) . "</div>";
+                echo "<div class='record-info'>";
+                echo "<p><strong>Data:</strong> " . htmlspecialchars($row["data_treino"]) . "</p>";
+                echo "<p><strong>Duração:</strong> " . htmlspecialchars($row["duracao"]) . "</p>";
+                echo "<p><strong>Descrição:</strong> " . nl2br(htmlspecialchars($row["descricao"])) . "</p>";
+                echo "<p><strong>Resultado:</strong> " . nl2br(htmlspecialchars($row["resultado"])) . "</p>";
+                echo "</div>";
+                echo "</div>";
+            }
+        }
+    }
+
+    $conn->close();
+    ?>
 </div>
 
 </body>

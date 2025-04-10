@@ -1,20 +1,31 @@
 <?php
 session_start();
-include __DIR__ . '/../db_connect.php';
+include_once("../conexao.php");
 
-$id_treino = $_POST['id_treino'];
-$id_atleta = $_SESSION['id_atleta'];
-$cansaco = $_POST['cansaco'];
-$dificuldades = $_POST['dificuldades'];
-$melhor_marca = isset($_POST['melhor_marca']) ? 1 : 0;
-
-$sql = "INSERT INTO avaliacoes_treino (id_treino, id_atleta, cansaco, dificuldades, melhor_marca)
-        VALUES ($id_treino, $id_atleta, $cansaco, '$dificuldades', $melhor_marca)";
-
-if ($conn->query($sql)) {
-    header("Location: lista_treinos_Atl.php?msg=avaliacao_sucesso");
-} else {
-    echo "Erro ao salvar: " . $conn->error;
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
+    header("Location: ../login.php");
+    exit();
 }
+
+$id_atleta = $_SESSION['id'];
+$id_treino = $_POST['id_treino'] ?? null;
+$avaliacao = trim($_POST['avaliacao'] ?? '');
+
+if ($id_treino && $avaliacao) {
+    $sql = "UPDATE treino_atletas SET avaliacao = ? WHERE id_treino = ? AND id_atleta = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sii", $avaliacao, $id_treino, $id_atleta);
+
+    if ($stmt->execute()) {
+        echo "✅ Avaliação enviada com sucesso! <a href='lista_treinos_Atl.php'>Voltar</a>";
+    } else {
+        echo "❌ Erro ao salvar avaliação: " . $stmt->error;
+    }
+
+    $stmt->close();
+} else {
+    echo "⚠️ Preencha todos os campos.";
+}
+
 $conn->close();
-?>
+

@@ -1,47 +1,57 @@
 <?php
-$tipo = $_GET['tipo'];
+session_start();
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
+    header("Location: ../login.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Treino</title>
+    <title>Cadastrar Treino</title>
     <link rel="stylesheet" href="../estilo/estilo.css">
 </head>
 <body>
     <?php include 'menu_Tec.php'; ?>
+
     <div class="main-container">
         <h2 class="form-title">Cadastro de Treino</h2>
 
-        <form action="processar_cadastro_treino.php" method="POST" class="cadastro-form">
-        <input type="hidden" name="id_tecnico" value="<?php echo $_SESSION['id_tecnico']; ?>">  
+        <form class="cadastro-form" action="processar_cadastro_treino.php" method="POST">
+            <label for="tipo_treino">Tipo de treino:</label>
+            <input type="text" name="tipo_treino" id="tipo_treino" required class="input-field">
 
-            <label for="nome">Nome do Treino:</label>
-            <input type="text" id="nome" name="nome" required>
-
-            <label for="descricao">Descrição:</label>
-            <textarea id="descricao" name="descricao" rows="4" required></textarea>
-
-            <label for="data">Data do Treino:</label>
-            <input type="date" id="data" name="data" required>
-
-            <label for="duracao">Duração (minutos):</label>
-            <input type="number" id="duracao" name="duracao" min="1" required>
-
-            <label for="tipo_treino">Tipo de Treino:</label>
-            <select id="tipo_treino" name="tipo_treino" required>
-                <option value="resistencia">Resistência</option>
-                <option value="velocidade">Velocidade</option>
-                <option value="forca">Força</option>
+            <label for="dia_semana">Dia da Semana:</label>
+            <select name="dia_semana" id="dia_semana" class="input-field" required>
+                <option value="">Selecione</option>
+                <option value="Segunda">Segunda</option>
+                <option value="Terça">Terça</option>
+                <option value="Quarta">Quarta</option>
+                <option value="Quinta">Quinta</option>
+                <option value="Sexta">Sexta</option>
+                <option value="Sábado">Sábado</option>
+                <option value="Domingo">Domingo</option>
             </select>
 
-            <label for="atleta_id">Atletas:</label>
-            <select id="atleta_id" name="atleta_id[]" multiple required>
+            <label for="data_treino">Data do treino:</label>
+            <input type="date" name="data_treino" id="data_treino" required class="input-field">
+
+            <label for="duracao">Duração (ex: 01:30h):</label>
+            <input type="text" name="duracao" id="duracao" required class="input-field">
+
+            <label for="descricao">Descrição:</label>
+            <textarea name="descricao" id="descricao" rows="4" required class="input-field"></textarea>
+
+            <label for="resultado">Resultado (opcional):</label>
+            <textarea name="resultado" id="resultado" rows="3" class="input-field"></textarea>
+
+            <label for="atleta_id">Selecionar Atletas:</label>
+            <select id="atleta_id" name="atleta_id[]" multiple required class="input-field">
                 <?php
-                include 'db_connect.php';
-                $sql = "SELECT id, nome FROM atletas";
+                include '../conexao.php';
+                $sql = "SELECT id, nome FROM pessoas WHERE tipo = 'atleta'";
                 $result = $conn->query($sql);
                 while ($row = $result->fetch_assoc()) {
                     echo "<option value='{$row['id']}'>{$row['nome']}</option>";
@@ -49,8 +59,7 @@ $tipo = $_GET['tipo'];
                 ?>
             </select>
 
-
-            <button type="submit" class="button">Cadastrar</button>
+            <button type="submit" class="button">Salvar Treino</button>
         </form>
     </div>
 </body>

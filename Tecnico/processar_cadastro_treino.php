@@ -1,44 +1,48 @@
 <?php
-include 'db_connect.php';
+session_start();
+include_once("../conexao.php");
 
-// Verifica se ta td certo
-
-if (empty($_POST['atleta_id']) || !isset($_POST['id_tecnico'], $_POST['tipo_treino'], $_POST['data'], $_POST['duracao'], $_POST['descricao'])) {
-    die("Erro: Todos os campos devem ser preenchidos.");
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
+    header("Location: ../login.php");
+    exit();
 }
 
-// Pegando dados do form
-$id_tecnico = $_POST['id_tecnico'];
-$tipo_treino = $_POST['tipo_treino']; 
-$data_treino = $_POST['data']; 
-$duracao = $_POST['duracao'];
-$descricao = $_POST['descricao'];
-$resultado = !empty($_POST['resultado']) ? $_POST['resultado'] : 'pendente';
+$id_tecnico = $_SESSION['id'] ?? null;
+$tipo_treino = $_POST['tipo_treino'] ?? '';
+$data_treino = $_POST['data_treino'] ?? '';
+$duracao = $_POST['duracao'] ?? '';
+$dia_semana = $_POST['dia_semana'] ?? '';
+$descricao = $_POST['descricao'] ?? '';
+$resultado = $_POST['resultado'] ?? null;
+$atletas = $_POST['atleta_id'] ?? [];
 
-// Permitir seleção de varios atletas
-$atletas = $_POST['atleta_id']; // Pode ser um array se permitir múltiplos
+if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !empty($atletas)) {
+    // mandando pra tabela treinos
+    $sql = "INSERT INTO treinos (id_tecnico, tipo_treino, dia_semana, data_treino, duracao, descricao, resultado)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("issssss", $id_tecnico, $tipo_treino, $dia_semana, $data_treino, $duracao, $descricao, $resultado);
 
-// Verifica se foi enviado mais de um atleta
-if (is_array($atletas)) {
-    foreach ($atletas as $id_atleta) {
-        $sql = "INSERT INTO treinos (id_atleta, id_tecnico, modalidade, data_treino, duracao, descricao, resultado) 
-                VALUES ('$id_atleta', '$id_tecnico', '$tipo_treino', '$data_treino', '$duracao', '$descricao', '$resultado')";
 
-        if (!$conn->query($sql)) {
-            echo "Erro ao cadastrar treino para o atleta ID $id_atleta: " . $conn->error . "<br>";
+    if ($stmt->execute()) {
+        $id_treino = $stmt->insert_id;
+
+        // vinculando com os atletas
+        foreach ($atletas as $id_atleta) {
+            $sql_vinculo = "INSERT INTO treino_atletas (id_treino, id_atleta) VALUES (?, ?)";
+            $stmt_vinculo = $conn->prepare($sql_vinculo);
+            $stmt_vinculo->bind_param("ii", $id_treino, $id_atleta);
+            $stmt_vinculo->execute();
         }
-    }
-} else {
-    // Caso apenas um atleta seja selecionado
-    $sql = "INSERT INTO treinos (id_atleta, id_tecnico, modalidade, data_treino, duracao, descricao, resultado) 
-            VALUES ('$atletas', '$id_tecnico', '$tipo_treino', '$data_treino', '$duracao', '$descricao', '$resultado')";
 
-    if (!$conn->query($sql)) {
-        echo "Erro ao cadastrar treino: " . $conn->error;
+        echo "✅ Treino cadastrado com sucesso com os atletas vinculados! <a href='cadastrar_OP_Tec.php'>Voltar</a>";
+    } else {
+        echo "❌ Erro ao cadastrar treino: " . $stmt->error;
     }
+
+    $stmt->close();
+} else {
+    echo "⚠️ Preencha todos os campos obrigatórios.";
 }
 
-echo "Treino cadastrado com sucesso!";
-header("Location: lista_treinos.php"); // Redireciona para a lista de treinos
 $conn->close();
-?>
