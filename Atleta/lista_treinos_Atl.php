@@ -1,6 +1,6 @@
 <?php
 session_start();
-$id_atleta = $_SESSION['id_atleta']; // Ajuste para o login real
+$id_atleta = $_SESSION['id_atleta']; // tenho q arrumar esta com erro 
 
 include __DIR__ . '/../db_connect.php';
 

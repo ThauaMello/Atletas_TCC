@@ -34,11 +34,11 @@ body{
 }
 
 .login-form label {
-  color: #58bc82;
+  color: #ffffff;
   font-weight: bold;
 }
 
-.login-form input[type="email"],
+.login-form input[type="text"],
 .login-form input[type="password"] {
   padding: 12px;
   border: none;
@@ -48,7 +48,7 @@ body{
 }
 
 .login-form input:focus {
-  outline: 2px solid #58bc82;
+  outline: 2px solid #ffffff;
 }
 
 .login-form .submit {
@@ -63,7 +63,7 @@ body{
 }
 
 .login-form .submit:hover {
-  background-color: #58bc82;
+  background-color: #ffffff;
   color: #2e2e2e;
 }
 
@@ -76,6 +76,17 @@ body{
   color: #ffd700;
   text-decoration: none;
   font-weight: bold;
+}
+
+.input-field {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  outline: 2px solid #707070;
+}
+.input-field:focus {
+  outline: 2px solid #181818;
 }
 
 /* -------- index -------- */
