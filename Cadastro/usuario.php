@@ -19,13 +19,20 @@ $tipo = $_GET['tipo'] ?? '';
             <input type="hidden" name="tipo" value="<?= $tipo ?>">
 
             <label for="nome">Nome:</label>
-            <input type="text" name="nome" required>
+            <input type="text" name="nome" class="input-field" required>
 
             <label for="email">Email:</label>
-            <input type="email" name="email" required>
+            <input type="email" name="email" class="input-field" required>
 
             <label for="senha">Senha:</label>
-            <input type="password" name="senha" required>
+            <input type="password" name="senha" class="input-field" required>
+
+            <?php if ($tipo == 'atleta' || $tipo == 'tecnico'): ?>
+
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf" class="input-field" required>
+
+            <?php endif; ?>
 
             <button type="submit">Salvar</button>
         </form>

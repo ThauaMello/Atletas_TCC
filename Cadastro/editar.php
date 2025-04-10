@@ -2,7 +2,13 @@
 include_once("../conexao.php");
 
 $id = $_GET['id'] ?? '';
-$sql = "SELECT * FROM pessoas WHERE id=?";
+
+if (!$id) {
+    echo "ID inválido.";
+    exit;
+}
+
+$sql = "SELECT * FROM pessoas WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -24,21 +30,27 @@ if (!$pessoa) {
 </head>
 <body>
     <div class="main-container">
-        <h2 class="form-title">Editar Pessoa</h2>
-        <form action="salvar.php" method="POST">
+        <h2 class="form-title">Editar <?= ucfirst($pessoa['tipo']) ?></h2>
+
+        <form action="salvar_edicao.php" method="POST">
             <input type="hidden" name="id" value="<?= $pessoa['id'] ?>">
             <input type="hidden" name="tipo" value="<?= $pessoa['tipo'] ?>">
 
             <label for="nome">Nome:</label>
-            <input type="text" name="nome" value="<?= $pessoa['nome'] ?>" required>
+            <input type="text" name="nome" value="<?= $pessoa['nome'] ?>" class="input-field" required>
 
             <label for="email">Email:</label>
-            <input type="email" name="email" value="<?= $pessoa['email'] ?>" required>
+            <input type="email" name="email" value="<?= $pessoa['email'] ?>" class="input-field" required>
+
+            <?php if ($pessoa['tipo'] === 'atleta' || $pessoa['tipo'] === 'tecnico'): ?>
+                <label for="cpf">CPF:</label>
+                <input type="text" name="cpf" value="<?= $pessoa['cpf'] ?>" class="input-field" required>
+            <?php endif; ?>
 
             <label for="senha">Nova Senha (opcional):</label>
-            <input type="password" name="senha">
+            <input type="password" name="senha" class="input-field">
 
-            <button type="submit">Salvar</button>
+            <button type="submit" class="button">Salvar</button>
         </form>
     </div>
 </body>
