@@ -2,15 +2,20 @@
 include_once("../conexao.php");
 
 $nome = $_POST['nome'] ?? '';
-$email = $_POST['email'] ?? '';
+$usuario = $_POST['email'] ?? '';  // continua vindo do input chamado email
 $senha = password_hash($_POST['senha'] ?? '', PASSWORD_DEFAULT);
 $cpf = $_POST['cpf'] ?? null;
 $tipo = $_POST['tipo'] ?? '';
 
-if ($nome && $email && $senha && $tipo) {
-    $sql = "INSERT INTO pessoas (nome, email, senha, tipo, cpf) VALUES (?, ?, ?, ?, ?)";
+if ($nome && $usuario && $senha && $tipo) {
+    $sql = "INSERT INTO pessoas (nome, usuario, senha, tipo, cpf) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $nome, $email, $senha, $tipo, $cpf);
+
+    if (!$stmt) {
+        die("Erro no prepare: " . $conn->error);
+    }
+
+    $stmt->bind_param("sssss", $nome, $usuario, $senha, $tipo, $cpf);
 
     if ($stmt->execute()) {
         echo "Cadastro realizado com sucesso! <a href='usuario.php?tipo=$tipo'>Voltar</a>";

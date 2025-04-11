@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Mandando cada um pro seu lugar
             switch ($user['tipo']) {
                 case 'atleta':
-                    header("Location: Atleta/index_Atleta.php");
+                    header("Location: Atleta/intex_Atleta.php");
                     break;
                 case 'tecnico':
                     header("Location: Tecnico/index_Tec.php");
