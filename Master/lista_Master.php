@@ -1,70 +1,79 @@
+<?php
+session_start();
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'master') {
+    header("Location: ../login.php");
+    exit();
+}
+
+include_once("../conexao.php");
+
+$tipo = $_GET['tipo'] ?? null;
+if (!$tipo || !in_array($tipo, ['tecnico', 'atleta'])) {
+    echo "Tipo inválido.";
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/TCC/estilo/estilo.css">
-        <title>Lista de <?php echo isset($_GET['tipo']) ? ucfirst($_GET['tipo']) . 's' : 'Registros'; ?></title>
-        
-        <script>
-            function toggleInfo(button) {
-                const recordInfo = button.closest('.record').querySelector('.record-info');
-                if (recordInfo.style.display === 'none') {
-                    recordInfo.style.display = 'block';
-                    button.textContent = '▲';
-                } else {
-                    recordInfo.style.display = 'none';
-                    button.textContent = '▼';
-                }
-            }
-        </script>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de <?= ucfirst($tipo) . 's' ?></title>
+    <link rel="stylesheet" href="../estilo/estilo.css">
+    <script>
+        function toggleInfo(button) {
+            const recordInfo = button.closest('.record').querySelector('.record-info');
+            recordInfo.style.display = recordInfo.style.display === 'none' ? 'block' : 'none';
+            button.textContent = button.textContent === '▼' ? '▲' : '▼';
+        }
+    </script>
+</head>
+<body>
 
-    </head>
-    <body>
+<?php include 'menu_Master.php'; ?>
 
-        <?php include 'menu_Master.php'; ?>
+<div class="main-container">
+    <h2 class="form-title">Lista de <?= ucfirst($tipo) . 's' ?></h2>
 
-        <div class="main-container">
-            <h2 class="form-title">Lista de <?php echo isset($_GET['tipo']) ? ucfirst($_GET['tipo']) . 's' : 'Registros'; ?></h2>
+    <?php
+    $sql = "SELECT * FROM pessoas WHERE tipo = ? ORDER BY nome";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $tipo);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-            <?php
+    if ($result->num_rows > 0):
+        while ($row = $result->fetch_assoc()):
+            $id = $row['id'] ?? null;
+            $nome = htmlspecialchars($row['nome'] ?? 'Sem nome');
+            $email = htmlspecialchars($row['email'] ?? '-');
+            $cpf = htmlspecialchars($row['cpf'] ?? '-');
 
-            include __DIR__ . '/../db_connect.php';
+            echo "<div class='record'>";
+            echo "<button class='toggle-info' onclick='toggleInfo(this)'>▼</button>";
+            echo "<img src='../img/avatar_padrao.png' alt='Foto'>";
+            echo "<div class='record-name'>" . $nome . "</div>";
+            echo "<div class='record-info'>";
+            echo "<p><strong>Email:</strong> $email</p>";
+            echo "<p><strong>CPF:</strong> $cpf</p>";
 
-            // buscando a tabela propria
-            if (isset($_GET['tipo'])) {
-                $tipo = $_GET['tipo'];
-                $table = ($tipo == 'atleta') ? 'atletas' : 'tecnicos';
-
-                // Consulta ao banco de dados
-                $sql = "SELECT * FROM $table";
-                $result = $conn->query($sql);
-
-                if ($result->num_rows > 0) {
-                    // Exibir dados de cada linha
-                    while($row = $result->fetch_assoc()) {
-                        echo "<div class='record'>";
-                        echo "<button class='toggle-info' onclick='toggleInfo(this)'>▼</button>";
-                        echo "<img src='uploads/" . $row['foto'] . "' alt='" . $row['nome'] . "'>";
-                        echo "<div class='record-name'>" . $row["nome"] . "</div>";
-                        echo "<div class='record-info'>";
-                        echo "<p>Idade: " . $row["idade"]. "</p>";
-                        echo "<p>Modalidade: " . $row["modalidade"]. "</p>";
-                        echo "<a href='editar_Master.php?id=" . $row['id'] . "&tipo=" . $tipo . "'>Editar</a> | ";
-                        echo "<a href='excluir_Master.php?id=" . $row['id'] . "&tipo=" . $tipo . "'>Excluir</a>";
-                        echo "</div>";
-                        echo "</div>";
-                    }
-                } else {
-                    echo "Nenhum registro encontrado.";
-                }
+            if ($id) {
+                echo "<a href='../Cadastro/editar.php?id=$id'>Editar</a> | ";
+                echo "<a href='../Cadastro/excluir.php?id=$id' onclick=\"return confirm('Deseja excluir este usuário?')\">Excluir</a>";
             } else {
-                echo "Tipo não especificado.";
+                echo "<p><em>Erro: ID do usuário ausente.</em></p>";
             }
 
-            $conn->close();
-            ?>
-        </div>
-        
-    </body>
+            echo "</div>";
+            echo "</div>";
+        endwhile;
+    else:
+        echo "<p>Nenhum " . $tipo . " encontrado.</p>";
+    endif;
+
+    $conn->close();
+    ?>
+</div>
+
+</body>
 </html>
