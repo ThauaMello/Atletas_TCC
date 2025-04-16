@@ -62,7 +62,20 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
                     <div class="full-width">
                         <label for="atletas">Selecionar Atletas:</label>
                         <select id="atletas" name="atletas[]" multiple size="5" required>
-                            <!-- Aqui você insere os <option> dos atletas com PHP -->
+                            <?php
+                                include_once("../conexao.php");
+
+                                $sql = "SELECT id_pessoa, nome FROM pessoas WHERE tipo = 'atleta'";
+                                $result = $conn->query($sql);
+
+                                if ($result && $result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<option value='{$row['id']}'>{$row['nome']}</option>";
+                                    }
+                                } else {
+                                    echo "<option disabled>Nenhum atleta encontrado</option>";
+                                }
+                            ?>
                         </select>
                     </div>
                 </div>
