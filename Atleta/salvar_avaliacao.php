@@ -7,7 +7,7 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
     exit();
 }
 
-$id_atleta = $_SESSION['id'];
+$id_atleta = $_SESSION['id_pessoa'];
 $id_treino = $_POST['id_treino'] ?? null;
 $avaliacao = trim($_POST['avaliacao'] ?? '');
 

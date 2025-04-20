@@ -10,6 +10,16 @@ if (!$id_treino) {
     echo "Treino não especificado.";
     exit();
 }
+
+$sql = "SELECT 1 FROM treino_atletas WHERE id_treino = ? AND id_atleta = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $id_treino, $id_atleta);
+$stmt->execute();
+if ($stmt->get_result()->num_rows === 0) {
+    echo "⚠️ Treino não pertence ao atleta.";
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>

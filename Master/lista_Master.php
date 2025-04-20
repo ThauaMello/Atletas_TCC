@@ -44,9 +44,9 @@ if (!$tipo || !in_array($tipo, ['tecnico', 'atleta'])) {
 
     if ($result->num_rows > 0):
         while ($row = $result->fetch_assoc()):
-            $id = $row['id'] ?? null;
+            $id = $row['id_pessoa'] ?? null;
             $nome = htmlspecialchars($row['nome'] ?? 'Sem nome');
-            $email = htmlspecialchars($row['email'] ?? '-');
+            $usuario = htmlspecialchars($row['usuario'] ?? '-');
             $cpf = htmlspecialchars($row['cpf'] ?? '-');
 
             echo "<div class='record'>";
@@ -54,7 +54,7 @@ if (!$tipo || !in_array($tipo, ['tecnico', 'atleta'])) {
             echo "<img src='../img/avatar_padrao.png' alt='Foto'>";
             echo "<div class='record-name'>" . $nome . "</div>";
             echo "<div class='record-info'>";
-            echo "<p><strong>Email:</strong> $email</p>";
+            echo "<p><strong>Usuário:</strong> $usuario</p>";
             echo "<p><strong>CPF:</strong> $cpf</p>";
 
             if ($id) {

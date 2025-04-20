@@ -6,7 +6,8 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
 }
 
 include_once("../conexao.php");
-$id_atleta = $_SESSION['id'];
+$id_atleta = $_SESSION['id_pessoa'];
+
 ?>
 
 <!DOCTYPE html>

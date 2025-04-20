@@ -6,7 +6,18 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
 }
 
 include_once("../conexao.php");
-$id_atleta = $_SESSION['id'];
+$id_atleta = $_SESSION['id_pessoa']; // CORRIGIDO
+
+$sql = "SELECT t.*, ta.avaliacao FROM treinos t
+        JOIN treino_atletas ta ON t.id_treino = ta.id_treino
+        WHERE ta.id_atleta = ?
+        ORDER BY FIELD(t.dia_semana, 'Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'), t.data_treino DESC";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_atleta);
+$stmt->execute();
+$result = $stmt->get_result();
+
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +75,13 @@ $id_atleta = $_SESSION['id'];
                 echo "<p><strong>Duração:</strong> " . htmlspecialchars($row["duracao"]) . "</p>";
                 echo "<p><strong>Descrição:</strong> " . nl2br(htmlspecialchars($row["descricao"])) . "</p>";
                 echo "<p><strong>Resultado:</strong> " . nl2br(htmlspecialchars($row["resultado"])) . "</p>";
+
+                if (empty($row['avaliacao'])) {
+                    echo "<a href='avaliar_treino.php?id={$row['id_treino']}'>Avaliar</a>";
+                } else {
+                    echo "<p>✅ Avaliação enviada</p>";
+                }
+
                 echo "</div>";
                 echo "</div>";
             }

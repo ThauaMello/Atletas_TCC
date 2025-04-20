@@ -40,10 +40,10 @@ include_once("../conexao.php");
                     echo "<img src='../img/avatar_padrao.png' alt='Atleta'>"; // Pode personalizar se usar upload
                     echo "<div class='record-name'>" . htmlspecialchars($row["nome"]) . "</div>";
                     echo "<div class='record-info'>";
-                    echo "<p><strong>Email:</strong> " . htmlspecialchars($row["email"]) . "</p>";
+                    echo "<p><strong>Usuário:</strong> " . htmlspecialchars($row["usuario"] ?? '-') . "</p>";
                     echo "<p><strong>CPF:</strong> " . htmlspecialchars($row["cpf"] ?? '-') . "</p>";
-                    echo "<a href='../Cadastro/editar.php?id=" . $row['id'] . "'>Editar</a> | ";
-                    echo "<a href='../Cadastro/excluir.php?id=" . $row['id'] . "' onclick=\"return confirm('Deseja excluir este atleta?')\">Excluir</a>";
+                    echo "<a href='../Cadastro/editar.php?id=" . $row['id_pessoa'] . "'>Editar</a> | ";
+                    echo "<a href='../Cadastro/excluir.php?id=" . $row['id_pessoa'] . "' onclick=\"return confirm('Deseja excluir este atleta?')\">Excluir</a>";
                     echo "</div>";
                     echo "</div>";
                 endwhile;

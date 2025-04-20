@@ -2,7 +2,7 @@
 include_once("../conexao.php");
 
 $nome = $_POST['nome'] ?? '';
-$usuario = $_POST['email'] ?? '';  // continua vindo do input chamado email
+$usuario = $_POST['usuario'] ?? '';
 $senha = password_hash($_POST['senha'] ?? '', PASSWORD_DEFAULT);
 $cpf = $_POST['cpf'] ?? null;
 $tipo = $_POST['tipo'] ?? '';

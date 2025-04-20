@@ -83,11 +83,11 @@ while ($row = $result_vinc->fetch_assoc()) {
             <label for="atleta_id">Selecionar Atletas:</label>
             <select id="atleta_id" name="atleta_id[]" multiple required class="input-field">
                 <?php
-                $sql = "SELECT id, nome FROM pessoas WHERE tipo = 'atleta'";
+                $sql = "SELECT id_pessoa, nome FROM pessoas WHERE tipo = 'atleta'";
                 $res = $conn->query($sql);
                 while ($a = $res->fetch_assoc()) {
                     $selected = in_array($a['id'], $atletas_vinculados) ? 'selected' : '';
-                    echo "<option value='{$a['id']}' $selected>{$a['nome']}</option>";
+                    echo "<option value='{$a['id_pessoa']}' $selected>{$a['nome']}</option>";
                 }
                 ?>
             </select>

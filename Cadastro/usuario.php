@@ -41,8 +41,8 @@ switch ($_SESSION['tipo']) {
                 <label for="nome">Nome:</label>
                 <input type="text" name="nome" class="input-field" required>
 
-                <label for="email">Email:</label>
-                <input type="email" name="email" class="input-field" required>
+                <label for="usuario">Usuário:</label>
+                <input type="text" name="usuario" class="input-field" required>
 
                 <label for="senha">Senha:</label>
                 <input type="password" name="senha" class="input-field" required>

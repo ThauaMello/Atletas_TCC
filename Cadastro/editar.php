@@ -1,24 +1,29 @@
 <?php
-include_once("../conexao.php");
+    include_once("../conexao.php");
 
-$id = $_GET['id'] ?? '';
+    $id = $_GET['id'] ?? '';
 
-if (!$id) {
-    echo "ID inválido.";
-    exit;
-}
+    if (!$id) {
+        echo "ID inválido.";
+        exit;
+    }
 
-$sql = "SELECT * FROM pessoas WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$pessoa = $result->fetch_assoc();
+    $sql = "SELECT * FROM pessoas WHERE id_pessoa = ?";
+    $stmt = $conn->prepare($sql);
 
-if (!$pessoa) {
-    echo "Pessoa não encontrada.";
-    exit;
-}
+    if (!$stmt) {
+        die("Erro na preparação da query: " . $conn->error);
+    }
+
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $pessoa = $result->fetch_assoc();
+
+    if (!$pessoa) {
+        echo "Pessoa não encontrada.";
+        exit;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -33,14 +38,14 @@ if (!$pessoa) {
         <h2 class="form-title">Editar <?= ucfirst($pessoa['tipo']) ?></h2>
 
         <form action="salvar_edicao.php" method="POST">
-            <input type="hidden" name="id" value="<?= $pessoa['id'] ?>">
+            <input type="hidden" name="id" value="<?= $pessoa['id_pessoa'] ?>">
             <input type="hidden" name="tipo" value="<?= $pessoa['tipo'] ?>">
 
             <label for="nome">Nome:</label>
             <input type="text" name="nome" value="<?= $pessoa['nome'] ?>" class="input-field" required>
 
-            <label for="email">Email:</label>
-            <input type="email" name="email" value="<?= $pessoa['email'] ?>" class="input-field" required>
+            <label for="usuario">Usuário:</label>
+            <input type="text" name="usuario" value="<?= $pessoa['usuario'] ?>" class="input-field" required>
 
             <?php if ($pessoa['tipo'] === 'atleta' || $pessoa['tipo'] === 'tecnico'): ?>
                 <label for="cpf">CPF:</label>

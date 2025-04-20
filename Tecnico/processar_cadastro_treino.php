@@ -7,7 +7,7 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
     exit();
 }
 
-$id_tecnico = $_SESSION['id'] ?? null;
+$id_tecnico = $_SESSION['id_pessoa'];
 $tipo_treino = $_POST['tipo_treino'] ?? '';
 $data_treino = $_POST['data_treino'] ?? '';
 $duracao = $_POST['duracao'] ?? '';
@@ -29,7 +29,7 @@ if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !em
 
         // vinculando com os atletas
         foreach ($atletas as $id_atleta) {
-            $sql_vinculo = "INSERT INTO treino_atleta (treino_id, atleta_id) VALUES (?, ?)";
+            $sql_vinculo = "INSERT INTO treino_atletas (id_treino, id_atleta) VALUES (?, ?)";
             $stmt_vinculo = $conn->prepare($sql_vinculo);
             $stmt_vinculo->bind_param("ii", $id_treino, $id_atleta);
             $stmt_vinculo->execute();

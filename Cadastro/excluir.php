@@ -4,8 +4,13 @@ include_once("../conexao.php");
 $id = $_GET['id'] ?? '';
 
 if ($id) {
-    $sql = "DELETE FROM pessoas WHERE id = ?";
+    $sql = "DELETE FROM pessoas WHERE id_pessoa = ?";
     $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        die("Erro na preparação da query: " . $conn->error);
+    }
+
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
