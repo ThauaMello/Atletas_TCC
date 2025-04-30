@@ -18,9 +18,41 @@ if ($nome && $usuario && $senha && $tipo) {
     $stmt->bind_param("sssss", $nome, $usuario, $senha, $tipo, $cpf);
 
     if ($stmt->execute()) {
-        echo "Cadastro realizado com sucesso! <a href='usuario.php?tipo=$tipo'>Voltar</a>";
+        echo "
+        <html>
+            <head>
+                <meta charset='UTF-8'>
+                <title>Exclusão</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f0f0f0;
+                        text-align: center;
+                        padding-top: 100px;
+                    }
+                    .msg {
+                        background-color: #d4edda;
+                        color: #155724;
+                        border: 1px solid #c3e6cb;
+                        display: inline-block;
+                        padding: 20px;
+                        border-radius: 10px;
+                        font-size: 18px;
+                    }
+                </style>
+                <script>
+                    setTimeout(function(){
+                        window.location.href = 'usuario.php?tipo=$tipo';
+                    }, 3000); // redireciona após 3 segundos
+                </script>
+            </head>
+            <body>
+                <div class='msg'>Cadastro realizado com sucesso!<br>Redirecionando...</div>
+            </body>
+        </html>
+        ";
     } else {
-        echo "Erro ao cadastrar: " . $stmt->error;
+        echo "❌ Erro ao cadastrar: " . $stmt->error;
     }
 
     $stmt->close();
