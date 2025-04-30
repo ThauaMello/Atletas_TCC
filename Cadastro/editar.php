@@ -3,6 +3,8 @@
 
     $id = $_GET['id'] ?? '';
 
+    session_start();
+
     if (!$id) {
         echo "ID inválido.";
         exit;
@@ -24,6 +26,18 @@
         echo "Pessoa não encontrada.";
         exit;
     }
+
+    // Incluir o menu certo para o tipo de usuário
+    switch ($_SESSION['tipo']) {
+        case 'tecnico':
+            include '../Tecnico/menu_Tec.php';
+            break;
+        case 'master':
+            include '../Master/menu_Master.php';
+            break;
+    }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +51,7 @@
     <div class="main-container">
         <h2 class="form-title">Editar <?= ucfirst($pessoa['tipo']) ?></h2>
 
-        <form action="salvar_edicao.php" method="POST">
+        <form action="salvar_edicao.php" class="cadastro-form" method="POST">
             <input type="hidden" name="id" value="<?= $pessoa['id_pessoa'] ?>">
             <input type="hidden" name="tipo" value="<?= $pessoa['tipo'] ?>">
 
