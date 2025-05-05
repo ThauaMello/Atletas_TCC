@@ -57,11 +57,6 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
                 </div>
 
                 <div class="full-width">
-                    <label for="resultado">Resultado (opcional):</label>
-                    <textarea id="resultado" name="resultado"></textarea>
-                </div>
-
-                <div class="full-width">
                     <label for="atleta_id">Selecionar Atletas:</label>
                     <select id="atleta_id" name="atleta_id[]" multiple size="5" required>
                         <?php

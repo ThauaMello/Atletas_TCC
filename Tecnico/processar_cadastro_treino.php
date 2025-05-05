@@ -7,42 +7,69 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
     exit();
 }
 
-$id_tecnico = $_SESSION['id_pessoa'];
+// Buscar id_tecnico a partir do id_pessoa da sessão
+$id_pessoa = $_SESSION['id'];
+
+$sql = "SELECT id_tecnico FROM tecnico WHERE id_pessoa = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_pessoa);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result && $row = $result->fetch_assoc()) {
+    $id_tecnico = $row['id_tecnico'];
+    $stmt->close();
+} else {
+    echo "❌ Técnico não encontrado no banco de dados.";
+    exit;
+}
+
+// Receber os dados do formulário
 $tipo_treino = $_POST['tipo_treino'] ?? '';
 $data_treino = $_POST['data_treino'] ?? '';
 $duracao = $_POST['duracao'] ?? '';
 $dia_semana = $_POST['dia_semana'] ?? '';
 $descricao = $_POST['descricao'] ?? '';
-$resultado = $_POST['resultado'] ?? null;
+//$resultado = $_POST['resultado'] ?? null;  foi tirada (erro de colocação quem cadastra o resultado é o atleta)
 $atletas = $_POST['atleta_id'] ?? [];
 
+// Validação
 if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !empty($atletas)) {
-    // mandando pra tabela treinos
-    $sql = "INSERT INTO treinos (id_tecnico, tipo_treino, dia_semana, data_treino, duracao, descricao, resultado)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO treinos (id_tecnico, tipo_treino, dia_semana, data_treino, duracao, descricao)
+            VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("issssss", $id_tecnico, $tipo_treino, $dia_semana, $data_treino, $duracao, $descricao, $resultado);
+    $stmt->bind_param("isssss", $id_tecnico, $tipo_treino, $dia_semana, $data_treino, $duracao, $descricao);
 
 
     if ($stmt->execute()) {
-        $id_treino = $stmt->insert_id;
+        $treino_id = $stmt->insert_id;
+        $stmt->close();
 
-        // vinculando com os atletas
-        foreach ($atletas as $id_atleta) {
-            $sql_vinculo = "INSERT INTO treino_atletas (id_treino, id_atleta) VALUES (?, ?)";
-            $stmt_vinculo = $conn->prepare($sql_vinculo);
-            $stmt_vinculo->bind_param("ii", $id_treino, $id_atleta);
+        // Vincular atletas ao treino
+        $sql_vinculo = "INSERT INTO treino_atletas (treino_id, atleta_id) VALUES (?, ?)";
+        $stmt_vinculo = $conn->prepare($sql_vinculo);
+
+        if (!$stmt_vinculo) {
+            echo "❌ Erro ao preparar vínculo com atletas: " . $conn->error;
+            $conn->close();
+            exit;
+        }
+
+        foreach ($atletas as $atleta_id) {
+            $stmt_vinculo->bind_param("ii", $treino_id, $atleta_id);
             $stmt_vinculo->execute();
         }
 
-        echo "✅ Treino cadastrado com sucesso com os atletas vinculados! <a href='cadastrar_OP_Tec.php'>Voltar</a>";
+        $stmt_vinculo->close();
+
+        echo "<p style='text-align:center; font-weight:bold; color:green;'>✅ Treino cadastrado com sucesso com os atletas vinculados!</p>";
+        echo "<script>setTimeout(function(){ window.location.href = 'cadastrar_OP_Tec.php'; }, 2000);</script>";
     } else {
         echo "❌ Erro ao cadastrar treino: " . $stmt->error;
+        $stmt->close();
     }
-
-    $stmt->close();
 } else {
-    echo "⚠️ Preencha todos os campos obrigatórios.";
+    echo "<p style='color:red;'>⚠️ Preencha todos os campos obrigatórios.</p>";
 }
 
 $conn->close();
