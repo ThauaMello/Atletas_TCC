@@ -6,7 +6,7 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
 }
 
 include_once("../conexao.php");
-$id_tecnico = $_SESSION['id_pessoa'];
+$id_tecnico = $_SESSION['id']; 
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +64,7 @@ $id_tecnico = $_SESSION['id_pessoa'];
             echo "<p><strong>Data:</strong> " . htmlspecialchars($row["data_treino"]) . "</p>";
             echo "<p><strong>Duração:</strong> " . htmlspecialchars($row["duracao"]) . "</p>";
             echo "<p><strong>Descrição:</strong> " . nl2br(htmlspecialchars($row["descricao"])) . "</p>";
-            echo "<p><strong>Resultado:</strong> " . nl2br(htmlspecialchars($row["resultado"])) . "</p>";
+            // echo "<p><strong>Resultado:</strong> " . nl2br(htmlspecialchars($row["resultado"])) . "</p>";
             echo "<p><strong>Atletas:</strong> " . $lista_atletas . "</p>";
             echo "<a href='editar_treino.php?id=$id_treino'>Editar</a> | ";
             echo "<a href='excluir_treino.php?id=$id_treino' onclick=\"return confirm('Deseja excluir este treino?')\">Excluir</a>";

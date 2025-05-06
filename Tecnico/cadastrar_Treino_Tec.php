@@ -57,8 +57,8 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
                 </div>
 
                 <div class="full-width">
-                    <label for="atleta_id">Selecionar Atletas:</label>
-                    <select id="atleta_id" name="atleta_id[]" multiple size="5" required>
+                    <label for="id_atleta">Selecionar Atletas:</label>
+                    <select id="id_atleta" name="id_atleta[]" multiple size="5" required>
                         <?php
                         include_once("../conexao.php");
                         $sql = "SELECT id_pessoa, nome FROM pessoas WHERE tipo = 'atleta'";

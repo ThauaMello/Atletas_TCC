@@ -80,8 +80,8 @@ while ($row = $result_vinc->fetch_assoc()) {
             <label for="resultado">Resultado:</label>
             <textarea name="resultado" rows="3" class="input-field"><?= $treino['resultado'] ?></textarea>
 
-            <label for="atleta_id">Selecionar Atletas:</label>
-            <select id="atleta_id" name="atleta_id[]" multiple required class="input-field">
+            <label for="id_atleta">Selecionar Atletas:</label>
+            <select id="id_atleta" name="id_atleta[]" multiple required class="input-field">
                 <?php
                 $sql = "SELECT id_pessoa, nome FROM pessoas WHERE tipo = 'atleta'";
                 $res = $conn->query($sql);

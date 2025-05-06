@@ -14,7 +14,7 @@ $data_treino = $_POST['data_treino'] ?? '';
 $duracao = $_POST['duracao'] ?? '';
 $descricao = $_POST['descricao'] ?? '';
 $resultado = $_POST['resultado'] ?? '';
-$atletas = $_POST['atleta_id'] ?? [];
+$atletas = $_POST['id_atleta'] ?? [];
 
 if ($id_treino && $tipo_treino && $data_treino && $duracao && $descricao && !empty($atletas)) {
     // Atualizar treino

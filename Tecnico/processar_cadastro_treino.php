@@ -31,7 +31,7 @@ $duracao = $_POST['duracao'] ?? '';
 $dia_semana = $_POST['dia_semana'] ?? '';
 $descricao = $_POST['descricao'] ?? '';
 //$resultado = $_POST['resultado'] ?? null;  foi tirada (erro de colocação quem cadastra o resultado é o atleta)
-$atletas = $_POST['atleta_id'] ?? [];
+$atletas = $_POST['id_atleta'] ?? [];
 
 // Validação
 if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !empty($atletas)) {
@@ -42,11 +42,11 @@ if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !em
 
 
     if ($stmt->execute()) {
-        $treino_id = $stmt->insert_id;
+        $id_treino = $stmt->insert_id;
         $stmt->close();
 
         // Vincular atletas ao treino
-        $sql_vinculo = "INSERT INTO treino_atletas (treino_id, atleta_id) VALUES (?, ?)";
+        $sql_vinculo = "INSERT INTO treino_atletas (id_treino, id_atleta) VALUES (?, ?)";
         $stmt_vinculo = $conn->prepare($sql_vinculo);
 
         if (!$stmt_vinculo) {
@@ -55,8 +55,8 @@ if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !em
             exit;
         }
 
-        foreach ($atletas as $atleta_id) {
-            $stmt_vinculo->bind_param("ii", $treino_id, $atleta_id);
+        foreach ($atletas as $id_atleta) {
+            $stmt_vinculo->bind_param("ii", $id_treino, $id_atleta);
             $stmt_vinculo->execute();
         }
 
