@@ -52,6 +52,14 @@ switch ($_SESSION['tipo']) {
                     <input type="text" id="cpf" name="cpf" class="input-field" required>
                 <?php endif; ?>
 
+                <?php if ($tipo == 'atleta'): ?>
+                    <label for="modalidade">Modalidade:</label>
+                    <input type="text" id="modalidade" name="modalidade" class="input-field">
+                <?php elseif ($tipo == 'tecnico'): ?>
+                    <label for="especialidade">Especialidade:</label>
+                    <input type="text" id="especialidade" name="especialidade" class="input-field">
+                <?php endif; ?>
+
                 <button type="submit" class="button">Salvar</button>
             </form>
         </div>
