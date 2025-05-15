@@ -48,7 +48,7 @@
     <link rel="stylesheet" href="../estilo/estilo.css">
 </head>
 <body>
-    <div class="main-container">
+    <div class="container-treino">
         <h2 class="form-title">Editar <?= ucfirst($pessoa['tipo']) ?></h2>
 
         <form action="salvar_edicao.php" class="cadastro-form" method="POST">

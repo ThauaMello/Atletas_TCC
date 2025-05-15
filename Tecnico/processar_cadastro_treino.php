@@ -38,12 +38,18 @@ if ($id_tecnico && $tipo_treino && $data_treino && $duracao && $descricao && !em
     $sql = "INSERT INTO treinos (id_tecnico, tipo_treino, dia_semana, data_treino, duracao, descricao)
             VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isssss", $id_tecnico, $tipo_treino, $dia_semana, $data_treino, $duracao, $descricao);
-
-
+    if (!$stmt) {
+        die("❌ Erro ao preparar treino: " . $conn->error);
+    }
+    
+    if (!$stmt->bind_param("isssss", $id_tecnico, $tipo_treino, $dia_semana, $data_treino, $duracao, $descricao)) {
+        die("❌ Erro no bind_param: " . $stmt->error);
+    }
+    
     if ($stmt->execute()) {
         $id_treino = $stmt->insert_id;
         $stmt->close();
+    
 
         // Vincular atletas ao treino
         $sql_vinculo = "INSERT INTO treino_atletas (id_treino, id_atleta) VALUES (?, ?)";

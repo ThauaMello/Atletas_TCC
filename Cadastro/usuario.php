@@ -32,7 +32,7 @@ switch ($_SESSION['tipo']) {
     </head>
     <body>
 
-        <div class="main-container">
+        <div class="container-treino">
             <h2 class="form-title">Cadastro de <?= ucfirst($tipo) ?></h2>
 
             <form action="salvar.php" method="POST" class="cadastro-form">
