@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,7 +13,7 @@
 <body class="index">
     
     <div>
-        <h3 class="PG_NOME">Seja bem vindo</h3> 
+        <h3 class="PG_NOME">Seja bem vindo, <?= htmlspecialchars($_SESSION['nome']) ?></h3> <!-- colocar php para pegar nome do atleta -->
     </div>
 
     <div class="botoes"> 

@@ -1,22 +1,30 @@
 <?php
 session_start();
-if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
-    header("Location: ../login.php");
-    exit();
-}
+    if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
+        header("Location: ../login.php");
+        exit();
+    }
 
-include_once("../conexao.php");
-$id_atleta = $_SESSION['id_pessoa']; // CORRIGIDO
+    include_once("../conexao.php");
 
-$sql = "SELECT t.*, ta.avaliacao FROM treinos t
-        JOIN treino_atletas ta ON t.id_treino = ta.id_treino
-        WHERE ta.id_atleta = ?
-        ORDER BY FIELD(t.dia_semana, 'Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'), t.data_treino DESC";
+    $id_pessoa = $_SESSION['id'];
+    $sql_atleta = "SELECT id_atleta FROM atleta WHERE id_pessoa = ?";
+    $stmt = $conn->prepare($sql_atleta);
+    $stmt->bind_param("i", $id_pessoa);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $id_atleta = $row['id_atleta'];
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_atleta);
-$stmt->execute();
-$result = $stmt->get_result();
+    $sql = "SELECT t.*, ta.avaliacao FROM treinos t
+            JOIN treino_atletas ta ON t.id_treino = ta.id_treino
+            WHERE ta.id_atleta = ?
+            ORDER BY FIELD(t.dia_semana, 'Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'), t.data_treino DESC";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id_atleta);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
 ?>
 
@@ -39,7 +47,7 @@ $result = $stmt->get_result();
 <?php include 'menu_Atl.php'; ?>
 
 <div class="main-container">
-    <h2 class="form-title">Meus Treinos por Dia da Semana</h2>
+    <h2 class="form-title">Meus Treinos da Semana</h2>
 
     <?php
     // Buscar treinos do atleta com dia_semana
@@ -72,7 +80,7 @@ $result = $stmt->get_result();
                 echo "<div class='record-name'>" . htmlspecialchars($row["tipo_treino"]) . "</div>";
                 echo "<div class='record-info'>";
                 echo "<p><strong>Data:</strong> " . htmlspecialchars($row["data_treino"]) . "</p>";
-                echo "<p><strong>Duração:</strong> " . htmlspecialchars($row["duracao"]) . "</p>";
+                echo "<p><strong>Duração em horas:</strong> " . htmlspecialchars($row["duracao"]) . "</p>";
                 echo "<p><strong>Descrição:</strong> " . nl2br(htmlspecialchars($row["descricao"])) . "</p>";
                 echo "<p><strong>Resultado:</strong> " . nl2br(htmlspecialchars($row["resultado"])) . "</p>";
 

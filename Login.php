@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirecionamento por tipo
             switch ($user['tipo']) {
                 case 'atleta':
-                    header("Location: Atleta/index_Atleta.php");
+                    header("Location: Atleta/intex_Atleta.php");
                     break;
                 case 'tecnico':
                     header("Location: Tecnico/index_Tec.php");

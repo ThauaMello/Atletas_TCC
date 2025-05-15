@@ -1,5 +1,7 @@
-<?php
+<?php //rever pagina completaaaaaaaaaaaaaaaaaaaaaaaaa
 session_start();
+include_once("../conexao.php");
+
 if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
     header("Location: ../login.php");
     exit();
@@ -10,15 +12,25 @@ if (!$id_treino) {
     echo "Treino não especificado.";
     exit();
 }
+    $id_pessoa = $_SESSION['id'];
+    $sql_atleta = "SELECT id_atleta FROM atleta WHERE id_pessoa = ?";
+    $stmt = $conn->prepare($sql_atleta);
+    $stmt->bind_param("i", $id_pessoa);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $id_atleta = $row['id_atleta'];
 
-$sql = "SELECT 1 FROM treino_atletas WHERE id_treino = ? AND id_atleta = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $id_treino, $id_atleta);
-$stmt->execute();
-if ($stmt->get_result()->num_rows === 0) {
-    echo "⚠️ Treino não pertence ao atleta.";
-    exit();
-}
+
+    $sql = "SELECT 1 FROM treino_atletas WHERE id_treino = ? AND id_atleta = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $id_treino, $id_atleta);
+    $stmt->execute();
+
+    if ($stmt->get_result()->num_rows === 0) {
+        echo "⚠️ Treino não pertence ao atleta.";
+        exit();
+    }
 
 ?>
 
