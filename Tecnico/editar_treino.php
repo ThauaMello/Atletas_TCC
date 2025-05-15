@@ -81,9 +81,6 @@
                 <label for="descricao">Descrição:</label>
                 <textarea name="descricao" rows="4" required class="input-field"><?= $treino['descricao'] ?></textarea>
 
-                <label for="resultado">Resultado:</label>
-                <textarea name="resultado" rows="3" class="input-field"><?= $treino['resultado'] ?></textarea>
-
                 <label for="id_atleta">Selecionar Atletas:</label>
                 <select id="id_atleta" name="id_atleta[]" multiple required class="input-field">
                     <?php
