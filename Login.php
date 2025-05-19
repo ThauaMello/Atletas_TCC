@@ -7,6 +7,7 @@ $erro = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $_POST['usuario'] ?? '';
     $senha = $_POST['senha'] ?? '';
+    
 
     // Consulta
     $stmt = $conn->prepare("SELECT * FROM pessoas WHERE usuario = ?");
@@ -23,8 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (password_verify($senha, $user['senha'])) {
             // Sessões padronizadas
-            $_SESSION['id'] = $user['id_pessoa']; // ← importante!
+            $_SESSION['id'] = $user['id_pessoa']; 
             $_SESSION['tipo'] = $user['tipo'];
+            $_SESSION['nome'] = $user['nome'];
 
             // Redirecionamento por tipo
             switch ($user['tipo']) {

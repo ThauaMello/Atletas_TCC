@@ -1,5 +1,21 @@
+<?php
+    session_start();
+    include_once("../conexao.php");
 
+    if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'atleta') {
+    header("Location: ../login.php");
+    exit();}
 
+    $id_pessoa = $_SESSION['id'];
+    $sql_atleta = "SELECT id_atleta FROM atleta WHERE id_pessoa = ?";
+    $stmt = $conn->prepare($sql_atleta);
+    $stmt->bind_param("i", $id_pessoa);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $id_atleta = $row['id_atleta'];
+    
+?>
 
 
 <!DOCTYPE html>
