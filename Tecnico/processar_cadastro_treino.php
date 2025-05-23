@@ -30,7 +30,6 @@ $data_treino = $_POST['data_treino'] ?? '';
 $duracao = $_POST['duracao'] ?? '';
 $dia_semana = $_POST['dia_semana'] ?? '';
 $descricao = $_POST['descricao'] ?? '';
-//$resultado = $_POST['resultado'] ?? null;  foi tirada (erro de colocação quem cadastra o resultado é o atleta)
 $atletas = $_POST['id_atleta'] ?? [];
 
 // Validação

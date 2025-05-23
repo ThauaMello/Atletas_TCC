@@ -57,22 +57,29 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'tecnico') {
                 </div>
 
                 <div class="full-width">
-                    <label for="id_atleta">Selecionar Atletas:</label>
-                    <select id="id_atleta" name="id_atleta[]" multiple size="5" required>
-                        <?php
+                    <label>Selecionar Atletas:</label>
+                    <?php
                         include_once("../conexao.php");
-                        $sql = "SELECT id_pessoa, nome FROM pessoas WHERE tipo = 'atleta'";
+
+                        $sql = "SELECT a.id_atleta, p.nome 
+                                FROM atleta a
+                                JOIN pessoas p ON a.id_pessoa = p.id_pessoa";
                         $result = $conn->query($sql);
+
                         if ($result && $result->num_rows > 0) {
+                            echo "<div style='display: flex; flex-wrap: wrap; gap: 10px;'>";
                             while ($row = $result->fetch_assoc()) {
-                                echo "<option value='{$row['id_pessoa']}'>{$row['nome']}</option>";
+                                echo "<label style='flex: 1 1 200px;'>
+                                        <input type='checkbox' name='id_atleta[]' value='{$row['id_atleta']}'> {$row['nome']}
+                                    </label>";
                             }
+                            echo "</div>";
                         } else {
-                            echo "<option disabled>Nenhum atleta encontrado</option>";
+                            echo "<p style='color:red;'>Nenhum atleta encontrado.</p>";
                         }
-                        ?>
-                    </select>
+                    ?>
                 </div>
+
 
             </div>
 
