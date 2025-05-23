@@ -39,6 +39,7 @@
     <div class="botoes"> 
         <button class="button_" onclick="window.location.href='lista_opcoes_Tec.php'">Lista</button>
         <button class="button_" onclick="window.location.href='cadastrar_OP_Tec.php'">Cadastro</button>
+        <button class="button_" onclick="window.location.href='relatorios.php'">Relatorios</button>
     </div>
 
 </body>
