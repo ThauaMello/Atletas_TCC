@@ -52,6 +52,7 @@ session_start();
             <h2 class="form-title">Meus Treinos da Semana</h2>
 
             <?php
+
             // Buscar treinos do atleta com dia_semana
             $sql = "SELECT t.* FROM treinos t
                     JOIN treino_atletas ta ON t.id_treino = ta.id_treino
@@ -84,7 +85,7 @@ session_start();
                         echo "<p><strong>Data:</strong> " . htmlspecialchars($row["data_treino"]) . "</p>";
                         echo "<p><strong>Duração em horas:</strong> " . htmlspecialchars($row["duracao"]) . "</p>";
                         echo "<p><strong>Descrição:</strong> " . nl2br(htmlspecialchars($row["descricao"])) . "</p>";
-                        //echo "<p><strong>Resultado:</strong> " . nl2br(htmlspecialchars($row["resultado"])) . "</p>";
+                    
 
                         if (empty($row['avaliacao'])) {
                             echo "<a href='avaliar_treino.php?id={$row['id_treino']}'>Avaliar</a>";
