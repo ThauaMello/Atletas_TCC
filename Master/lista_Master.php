@@ -51,7 +51,7 @@ if (!$tipo || !in_array($tipo, ['tecnico', 'atleta'])) {
 
             echo "<div class='record'>";
             echo "<button class='toggle-info' onclick='toggleInfo(this)'>▼</button>";
-            echo "<img src='../img/avatar_padrao.png' alt='Foto'>";
+            //echo "<img src='../img/avatar_padrao.png' alt='Foto'>";
             echo "<div class='record-name'>" . $nome . "</div>";
             echo "<div class='record-info'>";
             echo "<p><strong>Usuário:</strong> $usuario</p>";

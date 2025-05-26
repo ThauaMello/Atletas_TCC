@@ -37,7 +37,7 @@ include_once("../conexao.php");
                 while ($row = $result->fetch_assoc()):
                     echo "<div class='record'>";
                     echo "<button class='toggle-info' onclick='toggleInfo(this)'>▼</button>";
-                    echo "<img src='../img/avatar_padrao.png' alt='Atleta'>"; // Pode personalizar se usar upload
+                    //echo "<img src='../img/avatar_padrao.png' alt='Atleta'>"; 
                     echo "<div class='record-name'>" . htmlspecialchars($row["nome"]) . "</div>";
                     echo "<div class='record-info'>";
                     echo "<p><strong>Usuário:</strong> " . htmlspecialchars($row["usuario"] ?? '-') . "</p>";

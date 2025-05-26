@@ -64,54 +64,6 @@
                 }
             ?>
 
-            <style>
-                .card-atleta {
-                    margin-bottom: 25px;
-                    border: 2px solid #333;
-                    border-radius: 10px;
-                    overflow: hidden;
-                }
-
-                .card-header {
-                    background-color: #444;
-                    color: #fff;
-                    padding: 12px 20px;
-                    font-weight: bold;
-                    font-size: 18px;
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .card-body {
-                    display: none;
-                    background-color: #f9f9f9;
-                    padding: 10px 20px;
-                }
-
-                .treino-header {
-                    background-color: #ddd;
-                    padding: 8px;
-                    margin: 10px 0;
-                    font-weight: bold;
-                    cursor: pointer;
-                    border-radius: 5px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .treino-info {
-                    display: none;
-                    padding: 8px 15px;
-                    background-color: #fff;
-                    border: 1px solid #ccc;
-                    margin-bottom: 10px;
-                    border-radius: 5px;
-                }
-            </style>
-
             <script>
                 function toggleById(id, iconId) {
                     const section = document.getElementById(id);
@@ -124,12 +76,12 @@
 
             <?php
                 foreach ($dados_por_atleta as $id_atleta => $atleta) {
-                    $atletaCardId = "card_body_{$id_atleta}";
-                    $atletaIconId = "icon_atleta_{$id_atleta}";
-                    echo "<div class='card-atleta'>";
+                    $atletaCardId = "card_body_{$id_atleta } ";
+                    $atletaIconId = "icon_atleta_{$id_atleta } ";
+                    echo "<div class='card-atleta '> ";
                     echo "<div class='card-header' onclick=\"toggleById('$atletaCardId', '$atletaIconId')\">";
                     echo "<span>{$atleta['nome']}</span>";
-                    echo "<span id='$atletaIconId'>▼</span>";
+                    echo "<span id='$atletaIconId'> ▼</span>";
                     echo "</div>";
                     echo "<div class='card-body' id='$atletaCardId'>";
 
